@@ -2,7 +2,11 @@
 
 ## C# Web API for handling contact form submissions with Gmail SMTP
 
-### Environment Variables Required
+### Configuration
+
+The application supports both environment variables (for production) and appsettings.json (for development).
+
+#### Production Environment Variables (Render)
 
 Set these environment variables on Render:
 
@@ -12,6 +16,23 @@ SMTP_PORT=587
 SMTP_USERNAME=your-email@gmail.com
 SMTP_PASSWORD=your-gmail-app-password
 TO_EMAIL=contact@aetherion.com
+PORT=5000
+```
+
+#### Development Configuration
+
+For local development, update `appsettings.Development.json`:
+
+```json
+{
+  "SmtpSettings": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "Username": "your-development-email@gmail.com",
+    "Password": "your-development-app-password",
+    "ToEmail": "your-development-email@gmail.com"
+  }
+}
 ```
 
 ### Gmail Setup
@@ -50,12 +71,22 @@ TO_EMAIL=contact@aetherion.com
 
 ### Local Development
 
+#### Option 1: Using appsettings.Development.json (Recommended)
+1. Update your SMTP credentials in `appsettings.Development.json`
+2. Run in development mode:
 ```bash
-cd backend
+ASPNETCORE_ENVIRONMENT=Development dotnet run
+```
+
+#### Option 2: Using Environment Variables
+```bash
+export SMTP_USERNAME=your-email@gmail.com
+export SMTP_PASSWORD=your-app-password
+export TO_EMAIL=your-email@gmail.com
 dotnet run
 ```
 
-API will be available at: `http://localhost:5000`
+API will be available at: `http://localhost:5001`
 
 ### Render Deployment
 

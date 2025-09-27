@@ -5,6 +5,13 @@ using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel to use PORT environment variable (for Render) or default ports
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5001";
+var isDevelopment = builder.Environment.IsDevelopment();
+var url = isDevelopment ? $"http://localhost:{port}" : $"http://0.0.0.0:{port}";
+
+builder.WebHost.UseUrls(url);
+
 // Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -64,12 +71,17 @@ public class ContactController : ControllerBase
                 return BadRequest(new { success = false, message = "Please fill in all required fields." });
             }
 
-            // Email configuration from environment variables
-            var smtpHost = Environment.GetEnvironmentVariable("SMTP_HOST") ?? "smtp.gmail.com";
-            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? "587");
-            var smtpUsername = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? throw new Exception("SMTP_USERNAME not configured");
-            var smtpPassword = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? throw new Exception("SMTP_PASSWORD not configured");
-            var toEmail = Environment.GetEnvironmentVariable("TO_EMAIL") ?? "aetherion925@gmail.com";
+            // Email configuration - environment variables override appsettings
+            var smtpHost = Environment.GetEnvironmentVariable("SMTP_HOST") ?? _configuration["SmtpSettings:Host"] ?? "smtp.gmail.com";
+            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT") ?? _configuration["SmtpSettings:Port"] ?? "587");
+            var smtpUsername = Environment.GetEnvironmentVariable("SMTP_USERNAME") ?? _configuration["SmtpSettings:Username"];
+            var smtpPassword = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? _configuration["SmtpSettings:Password"];
+            var toEmail = Environment.GetEnvironmentVariable("TO_EMAIL") ?? _configuration["SmtpSettings:ToEmail"] ?? "aetherion925@gmail.com";
+
+            if (string.IsNullOrEmpty(smtpUsername) || string.IsNullOrEmpty(smtpPassword))
+            {
+                throw new Exception("SMTP credentials not configured. Set SMTP_USERNAME and SMTP_PASSWORD environment variables or configure SmtpSettings in appsettings.json");
+            }
 
             // Create SMTP client
             using var smtpClient = new SmtpClient(smtpHost, smtpPort)

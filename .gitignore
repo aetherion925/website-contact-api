@@ -1,0 +1,64 @@
+# Build results
+bin/
+obj/
+out/
+artifacts/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# VS Code / Visual Studio
+.vscode/
+.idea/
+*.userprefs
+
+# ASP.NET Core
+*.dbmdl
+*.jfm
+Generated\ Files/
+
+# Logs
+*.log
+*.tlog
+
+# NUnit
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+
+# DotCover
+*.dotCover
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Backup & report files
+*.bak
+*.backup
+*.BLOB
+*.log
+*.dmp
+*.pdb
+
+# Publish output
+publish/
+**/wwwroot/lib/
+
+# Configuration
+appsettings.Development.json
+appsettings.json
+secrets.json
+
+# Entity Framework
+Migrations/
+
+# Others
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+./env
