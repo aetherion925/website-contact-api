@@ -7,31 +7,35 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Configure CORS with specific origins
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        policy.WithOrigins(
+            "http://localhost:3000",           
+            "http://localhost:5173",
+            "https://aetherion925.github.io/website"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Contact API v1");
-        options.RoutePrefix = string.Empty;
-    });
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Contact API v1");
+    options.RoutePrefix = string.Empty;
+});
 
 app.UseRouting();
-
-app.UseCors("AllowAll");
+app.UseCors("FrontendPolicy");
 
 app.MapControllers();
 
@@ -104,7 +108,7 @@ public class ContactController : ControllerBase
         catch (Exception ex)
         {
             Console.WriteLine($"Email error: {ex.Message}");
-            return StatusCode(500, new { success = false, message = "Sorry, there was an error sending your message. Please try again or contact us directly at contact@aetherion.com" });
+            return StatusCode(500, new { success = false, message = "Sorry, there was an error sending your message. Please try again or contact us directly at aetherion925@gmail.com" });
         }
     }
 
