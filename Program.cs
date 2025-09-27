@@ -19,9 +19,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure pipeline
-app.UseCors("AllowAll");
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Contact API v1");
+        options.RoutePrefix = string.Empty;
+    });
+}
+
 app.UseRouting();
+
+app.UseCors("AllowAll");
+
 app.MapControllers();
 
 app.Run();
