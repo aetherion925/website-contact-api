@@ -1,0 +1,5 @@
+#!/bin/bash
+# Render build script
+cd backend
+dotnet restore
+dotnet publish -c Release -o out
